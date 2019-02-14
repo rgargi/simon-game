@@ -15,8 +15,10 @@ $(document).keydown(function() {
 
 //Adding Click Event to Buttons
 $(".btn").click(function() {
-  storeSequence(this.id);
   animateOnPress(this.id);
+  userClickedPattern.push(this.id); //Storing User Input
+  playSound(this.id);
+  checkSequence(userClickedPattern.length - 1);
 });
 
 //Generating Next Random Sequence
@@ -33,24 +35,12 @@ function nextSequence() {
   $("#level-title").text("Level " + level);
 }
 
-//Storing User Input
-function storeSequence(color) {
-  userClickedPattern.push(color);
-  playSound(color);
-  console.log("Game:" + gamePattern);
-  console.log("User:" + userClickedPattern);
-  var index = userClickedPattern.length - 1;
-  checkSequence(index);
-}
-
 //Comparing User Input with Generated Sequence
 function checkSequence(index) {
   if (userClickedPattern[index] === gamePattern[index]) {
     win = true;
-    console.log("Right!");
   } else {
     win = false;
-    console.log("Wrong!");
     wrongAns();
   }
   if (index + 1 === level && win === true) {
@@ -63,8 +53,7 @@ function checkSequence(index) {
 }
 
 function wrongAns() {
-  var wrong = new Audio("sounds/wrong.mp3");
-  wrong.play();
+  playSound("wrong");
   $("body").addClass("game-over");
   setTimeout(function() {
     $("body").removeClass("game-over");
@@ -74,8 +63,8 @@ function wrongAns() {
 }
 
 //Play Sound based on the button id/color
-function playSound(color) {
-  var sound = new Audio("sounds/" + color + ".mp3");
+function playSound(name) {
+  var sound = new Audio("sounds/" + name + ".mp3");
   sound.play();
 }
 
